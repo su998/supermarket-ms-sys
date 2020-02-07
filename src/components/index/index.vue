@@ -2,13 +2,13 @@
   <div class="index">
     <el-container>
       <!-- 头部 -->
-      <el-header height="8%">
+      <el-header height="100px">
         <Top></Top>
       </el-header>
       <!-- 主体 -->
       <el-container>
         <!-- 左侧导航 -->
-        <el-aside width="12%">
+        <el-aside width="280px">
           <Nav></Nav>
         </el-aside>
         <el-main>

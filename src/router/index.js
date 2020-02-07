@@ -12,12 +12,10 @@ export default new Router({
     },
     {
       path: '/',
-      name: 'index',
       component: () => import('../components/index/Index.vue'),
       children: [
         {
           path: '',
-          name: 'home',
           component: () => import('../components/home/Home.vue')
         },
         {

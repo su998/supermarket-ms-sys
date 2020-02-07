@@ -1,19 +1,26 @@
 <template>
   <div class="top">
     <el-row>
-      <el-col :span="20">
+      <el-col :span="12">
         <div class="title">
           <i class="el-icon-s-unfold"></i>
-          华联超市后台管理系统
+          武汉加油后台管理系统
         </div>
       </el-col>
-      <el-col :span="4">
+      <el-col :span="12">
         <div class="top-right">
           <el-row>
-            <el-col :span="13">
-              欢迎您, <span class="username">{{ username }}</span>
+            <el-col :span="18">
+              欢迎您,
+              <el-dropdown>
+                <span class="username">{{ username }}<i class="el-icon-arrow-down el-icon--right"></i></span>
+                <el-dropdown-menu slot="dropdown">
+                    <el-dropdown-item>个人中心</el-dropdown-item>
+                    <el-dropdown-item>退出</el-dropdown-item>
+                </el-dropdown-menu>
+              </el-dropdown>
             </el-col>
-            <el-col :span="11">
+            <el-col :span="6">
               <div class="avatar">
                 <img width="100%" height="100%" :src="avatarUrl" alt="">
               </div>
@@ -30,7 +37,7 @@ import imgURL from '../../assets/avatar.jpg'
 export default {
   data () {
     return {
-      username: '苏怀平',
+      username: '彭于晏',
       avatarUrl: imgURL
     }
   }
@@ -46,15 +53,18 @@ export default {
     }
     .top-right {
       font-size: 22px;
+      text-align: right;
       .username {
         color: #42b983;
         font-style: italic;
         font-weight: 700;
+        font-size: 20px;
       }
       .avatar {
         width: 60px;
         height: 60px;
         margin-top: 20px;
+        margin-left: 5px;
         img {
           border-radius: 50%;
         }
