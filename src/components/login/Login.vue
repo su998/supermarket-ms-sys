@@ -28,8 +28,7 @@ export default {
     return {
       loginForm: {
         username: '',
-        password: '',
-        checkPwd: ''
+        password: ''
       },
       // 表单验证
       rules: {

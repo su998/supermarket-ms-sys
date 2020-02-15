@@ -27,11 +27,22 @@
                 </div>
                 <div class="text item">
                   <el-table :data="goodsData" style="width: 100%">
-                    <el-table-column prop="date" label="日期" width="260">
+                    <el-table-column type="index" width="50"></el-table-column>
+                    <el-table-column prop="date" label="日期" width="180">
                     </el-table-column>
-                    <el-table-column prop="name" label="姓名" width="260">
+                    <el-table-column prop="name" label="捐赠物品" width="210">
                     </el-table-column>
-                    <el-table-column prop="address" label="地址">
+                    <el-table-column prop="number" label="数量(个)" width="180">
+                    </el-table-column>
+                    <el-table-column prop="address" label="募捐机构">
+                    </el-table-column>
+                    <el-table-column
+                      fixed="right"
+                      label="操作"
+                      width="100">
+                      <template>
+                        <el-button type="text" size="small">编辑</el-button>
+                      </template>
                     </el-table-column>
                   </el-table>
                 </div>
@@ -46,12 +57,21 @@
                   <span>缺乏物资</span>
                 </div>
                 <div class="text item">
-                  <el-table :data="tableData" style="width: 100%">
-                    <el-table-column prop="date" label="日期" width="260">
+                  <el-table :data="needData" style="width: 100%">
+                    <el-table-column type="index" width="50"></el-table-column>
+                    <el-table-column prop="address" label="申请机构" width="260">
                     </el-table-column>
-                    <el-table-column prop="name" label="姓名" width="260">
+                    <el-table-column prop="name" label="物品" width="260">
                     </el-table-column>
-                    <el-table-column prop="address" label="地址">
+                    <el-table-column prop="number" label="数量(个)">
+                    </el-table-column>
+                     <el-table-column
+                      fixed="right"
+                      label="操作"
+                      width="100">
+                      <template>
+                        <el-button type="text" size="small">编辑</el-button>
+                      </template>
                     </el-table-column>
                   </el-table>
                 </div>
@@ -72,22 +92,48 @@ export default {
         {
           date: '2020-02-02',
           name: '医用一次性口罩',
+          number: '2000',
+          address: '湖北中心'
+        },
+        {
+          date: '2020-02-02',
+          name: 'N95口罩',
+          number: '2000',
           address: '武汉红十字会'
         },
         {
           date: '2020-02-02',
           name: '医用一次性口罩',
+          number: '2000',
           address: '武汉红十字会'
         },
         {
           date: '2020-02-02',
           name: '医用一次性口罩',
+          number: '2000',
           address: '武汉红十字会'
+        }
+      ],
+      needData: [
+        {
+          address: '湖北仁和医院',
+          name: '医用一次性口罩',
+          number: '2000'
         },
         {
-          date: '2020-02-02',
+          address: '湖北中心医院',
           name: '医用一次性口罩',
-          address: '武汉红十字会'
+          number: '15000'
+        },
+        {
+          address: '湖北中心医院',
+          name: 'n95口罩',
+          number: '12000'
+        },
+        {
+          address: '湖北第一人民医院',
+          name: '一次性防护服',
+          number: '8000'
         }
       ]
     }
@@ -99,6 +145,7 @@ export default {
 .home {
   .box-card {
     .el-card__header {
+      background-color: aliceblue;
       .title {
         text-align: left;
         font-size: 26px;
