@@ -3,14 +3,14 @@
     <div class="login-wrapper">
        <h1 class="title">
          <i class="el-icon-menu"></i>
-         华联超市管理系统-登录
+         武汉加油管理系统-登录
         </h1>
       <el-form :model="loginForm" status-icon :rules="rules" ref="loginForm" label-width="100px" class="demo-ruleForm">
           <el-form-item label="账号" prop="username">
             <el-input type="text" v-model="loginForm.username" autocomplete="off"></el-input>
           </el-form-item>
           <el-form-item label="密码" prop="password">
-            <el-input type="password" v-model="loginForm.password" autocomplete="off"></el-input>
+            <el-input type="password" v-model="loginForm.password" autocomplete="off" @keyup.enter.native="submitForm('loginForm')"></el-input>
           </el-form-item>
           <el-form-item>
             <el-button type="primary" @click="submitForm('loginForm')" >提交</el-button>
@@ -22,6 +22,7 @@
 </template>
 
 <script>
+import qs from 'qs'
 
 export default {
   data () {
@@ -34,7 +35,7 @@ export default {
       rules: {
         username: [
           {required: true, message: '用户名不能为空', trigger: 'blur'},
-          {min: 3, max: 12, message: '账号长度在3-5位', trigger: 'blur'}
+          {min: 2, max: 12, message: '账号长度在3-5位', trigger: 'blur'}
         ],
         password: [{
           required: true, message: '密码不能为空', trigger: 'blur'
@@ -46,17 +47,30 @@ export default {
     submitForm (formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          alert('欢迎来到华联超市后台管理系统')
           // 后续就可以把收集的账号和密码 一起发送给后端 验证用户名和密码的准确性
           // 收集账号和密码
           let params = {
             username: this.loginForm.username,
             password: this.loginForm.password
           }
-          console.log(params)
-
-          // 登陆成功跳转到首页
-          this.$router.push('/')
+          this.$axios.post('http://127.0.0.1:666/login/checkLogin', qs.stringify(params))
+            .then(res => {
+              let {status, msg} = res.data
+              if (status === 200) {
+                this.$message({
+                  type: 'success',
+                  message: msg
+                })
+                this.$router.push('/')
+              } else {
+                this.$message.error({
+                  message: msg
+                })
+              }
+            })
+            .catch(err => {
+              console.log(err)
+            })
         } else {
           alert('error submit!!')
           return false

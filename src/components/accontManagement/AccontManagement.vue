@@ -38,8 +38,19 @@
                 @click="handleDelete(scope.row.id)"><i class="el-icon-delete"></i>删除</el-button>
             </template>
           </el-table-column>
-
         </el-table>
+        <!-- 分页 -->
+        <div class="page">
+          <el-pagination
+            @size-change="handleSizeChange"
+            @current-change="handleCurrentChange"
+            :current-page="currentPage"
+            :page-sizes="[1, 3, 5, 10]"
+            :page-size="pageSize"
+            layout="total, sizes, prev, pager, next, jumper"
+            :total="total">
+          </el-pagination>
+        </div>
         <!-- 批量删除 & 取消操作 -->
         <div style="margin-top: 20px; text-align: left">
           <el-button @click="deleteSelectedAccount()">批量删除</el-button>
@@ -86,6 +97,9 @@ export default {
         authority: ''
       },
       modifyId: '', // 需要修改用户的id
+      total: 11, // 数据总条数
+      currentPage: 1, // 当前页数
+      pageSize: 3, // 每页显示的条数
       rules: {
         username: [
           { required: true, message: '用户名不能为空', trigger: 'blur' },
@@ -95,19 +109,48 @@ export default {
     }
   },
   created () {
-    this.getUserList()
+    // this.getUserList()
+    this.getUserListByPage()
   },
   methods: {
-    getUserList () { // 获取用户列表
-      this.$axios.get('http://127.0.0.1:666/account/accountList')
+    // getUserList () { // 获取用户列表
+    //   this.$axios.get('http://127.0.0.1:666/account/accountList')
+    //     .then(res => {
+    //       if (res.data.status === 200) {
+    //         this.accontManageData = res.data.userList
+    //       }
+    //     })
+    //     .catch(err => {
+    //       console.log(err)
+    //     })
+    // },
+    // 分页查询
+    getUserListByPage () {
+      this.$axios.get(`http://127.0.0.1:666/account/getUserListByPage?pageSize=${this.pageSize}&currentPage=${this.currentPage}`)
         .then(res => {
-          if (res.data.status === 200) {
-            this.accontManageData = res.data.userList
+          let {total, data} = res.data
+          if (res.status === 200) {
+            this.total = total
+            this.accontManageData = data
+            if (data.length === 0 && this.currentPage !== 1) {
+              this.currentPage -= 1
+              this.getUserListByPage()
+            }
           }
         })
         .catch(err => {
           console.log(err)
         })
+    },
+    // 每页条数改变时的函数
+    handleSizeChange (val) {
+      this.pageSize = val
+      this.getUserListByPage()
+    },
+    // 当前页数变化时的函数
+    handleCurrentChange (val) {
+      this.currentPage = val
+      this.getUserListByPage()
     },
     // 批量删除按钮
     deleteSelectedAccount () {
@@ -131,7 +174,7 @@ export default {
                 type: 'success',
                 message: '删除成功!'
               })
-              this.getUserList()
+              this.getUserListByPage()
             }
           })
           .catch(err => {
@@ -182,7 +225,7 @@ export default {
         this.$axios.post('http://127.0.0.1:666/account/accountEdit', qs.stringify(params))
           .then(res => {
             if (res.data.status === 200) {
-              this.getUserList()
+              this.getUserListByPage()
               this.flag = false
             }
           })
@@ -214,7 +257,7 @@ export default {
         this.$axios.get('http://127.0.0.1:666/account/accountDel?id=' + id)
           .then(res => {
             if (res.data.status === 200) {
-              this.getUserList()
+              this.getUserListByPage()
             }
           })
           .catch(err => {
@@ -244,6 +287,10 @@ export default {
     .el-card__body {
       .el-table{
         font-size: 18px;
+      }
+      .page {
+        margin-top: 20px;
+        text-align: left;
       }
     }
   }
