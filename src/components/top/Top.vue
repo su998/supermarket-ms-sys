@@ -12,11 +12,11 @@
           <el-row>
             <el-col :span="18">
               欢迎您,
-              <el-dropdown>
+              <el-dropdown @command="handleCommand">
                 <span class="username">{{ username }}<i class="el-icon-arrow-down el-icon--right"></i></span>
                 <el-dropdown-menu slot="dropdown">
                     <el-dropdown-item>个人中心</el-dropdown-item>
-                    <el-dropdown-item>退出</el-dropdown-item>
+                    <el-dropdown-item command="escLogin">退出</el-dropdown-item>
                 </el-dropdown-menu>
               </el-dropdown>
             </el-col>
@@ -37,8 +37,23 @@ import imgURL from '../../assets/avatar.jpg'
 export default {
   data () {
     return {
-      username: '彭于晏',
+      username: '',
       avatarUrl: imgURL
+    }
+  },
+  created () {
+    this.getUsername()
+  },
+  methods: {
+    getUsername () { // 获取用户名
+      this.username = window.localStorage.getItem('username')
+    },
+
+    handleCommand (command) { // 用户退出登录
+      if (command === 'escLogin') {
+        window.localStorage.removeItem('token')
+        this.$router.go(0)
+      }
     }
   }
 }

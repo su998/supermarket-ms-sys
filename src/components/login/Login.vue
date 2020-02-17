@@ -37,9 +37,10 @@ export default {
           {required: true, message: '用户名不能为空', trigger: 'blur'},
           {min: 2, max: 12, message: '账号长度在3-5位', trigger: 'blur'}
         ],
-        password: [{
-          required: true, message: '密码不能为空', trigger: 'blur'
-        }]
+        password: [
+          { required: true, message: '密码不能为空', trigger: 'blur' },
+          {min: 3, max: 26, message: '密码长度在3-26位', trigger: 'blur'}
+        ]
       }
     }
   },
@@ -55,8 +56,11 @@ export default {
           }
           this.$axios.post('http://127.0.0.1:666/login/checkLogin', qs.stringify(params))
             .then(res => {
-              let {status, msg} = res.data
+              let {status, msg, token, username} = res.data
               if (status === 200) {
+                // 本地存入token
+                window.localStorage.setItem('token', token)
+                window.localStorage.setItem('username', username)
                 this.$message({
                   type: 'success',
                   message: msg

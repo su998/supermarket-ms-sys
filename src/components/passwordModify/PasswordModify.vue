@@ -38,7 +38,7 @@
           </el-form-item>
           <!-- 添加按钮&重置按钮 -->
           <el-form-item>
-            <el-button type="primary" @click="submitForm('passwordModify')">添加</el-button>
+            <el-button type="primary" @click="submitForm('passwordModify')">修改</el-button>
             <el-button @click="resetForm('passwordModify')">重置</el-button>
           </el-form-item>
         </el-form>
@@ -48,6 +48,7 @@
 </template>
 
 <script>
+import qs from 'qs'
 
 export default {
   data () {
@@ -55,38 +56,48 @@ export default {
     const pass = (rule, value, callback) => {
       if (value === '') {
         callback(new Error('密码不能为空'))
-      } else if (value.length < 3 || value.length > 15) {
-        callback(new Error('密码长度在 3-15 范围之间'))
       } else {
-        if (this.passwordModify.newPass !== '') {
-          this.$refs.passwordModify.validateField('newPass')
+        let params = {
+          username: window.localStorage.getItem('username'),
+          password: value
         }
-        callback()
+        this.$axios.post('http://127.0.0.1:666/account/checkOldPwd', qs.stringify(params))
+          .then(res => {
+            if (res.data.status !== 200) {
+              callback(new Error('原密码不正确！'))
+            } else {
+              callback()
+            }
+          })
+          .catch(err => {
+            console.log(err)
+          })
       }
     }
     // 自定义新密码验证规则
     const newPass = (rule, value, callback) => {
       if (value === '') {
-        callback(new Error('密码不能为空'))
-      } else if (value.length < 3 || value.length > 15) {
-        callback(new Error('密码长度在 3-15 范围之间'))
-      } else if (value !== this.$refs.password) {
+        callback(new Error('新密码不能为空'))
+      } else if (value.length < 3 || value.length > 26) {
+        callback(new Error('密码长度在 3-26 范围之间'))
+      } else if (value === this.passwordModify.password) {
         callback(new Error('新密码不能和原密码一样'))
       } else {
         if (this.passwordModify.checkPwd !== '') {
-          this.$refs.passwordModify.validateField('checkPwd')
+          this.$refs.passwordModify.validateField('checkPass')
         }
-        callback()
       }
+      callback()
     }
     // 自定义确认密码验证规则
     const checkPass = (rule, value, callback) => {
       if (value === '') {
         callback(new Error('请确认密码'))
       } else {
-        if ((value !== this.passwordModify.password)) {
+        if ((value !== this.passwordModify.newPassword)) {
           callback(new Error('两次输入的密码不一致'))
         }
+        callback()
       }
     }
     return {
@@ -107,10 +118,27 @@ export default {
         ]
       }
     }
+  },
+  methods: {
+    submitForm (formName) { // 修改密码按钮
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          let params = {'newPassword': this.passwordModify.newPassword}
+          this.$axios.post('http://127.0.0.1:666/account/passwordModify', qs.stringify(params))
+            .then(res => {
+              console.log(res)
+            })
+            .catch(err => {
+              console.log(err)
+            })
+        } else {
+          console.log('error submit!!')
+          return false
+        }
+      })
+    }
   }
-
 }
-
 </script>
 
 <style lang="less" scoped>
