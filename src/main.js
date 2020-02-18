@@ -2,7 +2,7 @@
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
 import Vue from 'vue'
 import moment from 'moment'
-import axios from 'axios'
+import axios from './api/axiosReq'
 // eslint-disable-next-line import/no-duplicates
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'

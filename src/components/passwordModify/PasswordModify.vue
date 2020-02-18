@@ -17,7 +17,7 @@
         >
           <el-form-item label="密码" prop="password">
             <el-input
-              type="text"
+              type="password"
               v-model="passwordModify.password"
               autocomplete="off"
             ></el-input>
@@ -48,7 +48,6 @@
 </template>
 
 <script>
-import qs from 'qs'
 
 export default {
   data () {
@@ -61,9 +60,9 @@ export default {
           username: window.localStorage.getItem('username'),
           password: value
         }
-        this.$axios.post('http://127.0.0.1:666/account/checkOldPwd', qs.stringify(params))
+        this.$axios.post('/account/checkOldPwd', params)
           .then(res => {
-            if (res.data.status !== 200) {
+            if (res.status !== 200) {
               callback(new Error('原密码不正确！'))
             } else {
               callback()
@@ -123,10 +122,24 @@ export default {
     submitForm (formName) { // 修改密码按钮
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          let params = {'newPassword': this.passwordModify.newPassword}
-          this.$axios.post('http://127.0.0.1:666/account/passwordModify', qs.stringify(params))
+          let username = window.localStorage.getItem('username')
+          let params = {'newPassword': this.passwordModify.newPassword, username}
+          this.$axios.post('/account/passwordModify', params)
             .then(res => {
-              console.log(res)
+              if (res.status === 200) {
+                this.$message({
+                  type: 'warning',
+                  message: '修改成功,请重新登录',
+                  duration: 2000,
+                  showClose: true
+                })
+                setTimeout(() => {
+                  window.localStorage.removeItem('token')
+                  this.$router.push('/login')
+                }, 2000)
+              } else {
+                this.$message.error('修改失败，请再试一遍')
+              }
             })
             .catch(err => {
               console.log(err)

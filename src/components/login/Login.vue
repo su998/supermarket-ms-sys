@@ -22,8 +22,6 @@
 </template>
 
 <script>
-import qs from 'qs'
-
 export default {
   data () {
     return {
@@ -54,9 +52,9 @@ export default {
             username: this.loginForm.username,
             password: this.loginForm.password
           }
-          this.$axios.post('http://127.0.0.1:666/login/checkLogin', qs.stringify(params))
+          this.$axios.post('/login/checkLogin', params)
             .then(res => {
-              let {status, msg, token, username} = res.data
+              let {status, msg, token, username} = res
               if (status === 200) {
                 // 本地存入token
                 window.localStorage.setItem('token', token)

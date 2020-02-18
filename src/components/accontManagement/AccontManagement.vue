@@ -85,7 +85,6 @@
 </template>
 
 <script>
-import qs from 'qs'
 export default {
   data () {
     return {
@@ -126,9 +125,14 @@ export default {
     // },
     // 分页查询
     getUserListByPage () {
-      this.$axios.get(`http://127.0.0.1:666/account/getUserListByPage?pageSize=${this.pageSize}&currentPage=${this.currentPage}`)
+      this.$axios.get(`/account/getUserListByPage`,
+        {
+          pageSize: this.pageSize,
+          currentPage: this.currentPage
+        }
+      )
         .then(res => {
-          let {total, data} = res.data
+          let {total, data} = res
           if (res.status === 200) {
             this.total = total
             this.accontManageData = data
@@ -167,9 +171,9 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        this.$axios.get(`http://127.0.0.1:666/account/deleteSelectedAccount?id=${selectedId}`)
+        this.$axios.get(`/account/deleteSelectedAccount`, {id: selectedId})
           .then(res => {
-            if (res.data.status === 200) {
+            if (res.status === 200) {
               this.$message({
                 type: 'success',
                 message: '删除成功!'
@@ -197,10 +201,10 @@ export default {
     // 弹出用户信息修改页面
     handleEdit (id) {
       this.modifyId = id
-      this.$axios.get(`http://127.0.0.1:666/account/accountModify?id=${id}`)
+      this.$axios.get(`/account/accountModify`, {id})
         .then(res => {
-          let {username, authority} = res.data.userinfo[0]
-          if (res.data.status === 200) {
+          let {username, authority} = res.userinfo[0]
+          if (res.status === 200) {
             this.accountModify.username = username
             this.accountModify.authority = authority
             this.flag = true
@@ -222,9 +226,9 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        this.$axios.post('http://127.0.0.1:666/account/accountEdit', qs.stringify(params))
+        this.$axios.post('/account/accountEdit', params)
           .then(res => {
-            if (res.data.status === 200) {
+            if (res.status === 200) {
               this.getUserListByPage()
               this.flag = false
             }
@@ -254,9 +258,9 @@ export default {
           type: 'success',
           message: '删除成功!'
         })
-        this.$axios.get('http://127.0.0.1:666/account/accountDel?id=' + id)
+        this.$axios.get('/account/accountDel', {id})
           .then(res => {
-            if (res.data.status === 200) {
+            if (res.status === 200) {
               this.getUserListByPage()
             }
           })

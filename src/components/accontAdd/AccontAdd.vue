@@ -55,7 +55,6 @@
 </template>
 
 <script>
-import qs from 'qs'
 
 export default {
   data () {
@@ -93,7 +92,7 @@ export default {
       rules: {
         username: [
           { required: true, message: '用户名不能为空', trigger: 'blur' },
-          { min: 2, max: 12, message: '账号长度在3-5位', trigger: 'blur' }
+          { min: 2, max: 12, message: '账号长度在2-5位', trigger: 'blur' }
         ],
         password: [
           { validator: pass, trigger: 'blur' }
@@ -119,14 +118,12 @@ export default {
             password: this.accontAddForm.password,
             authority: this.accontAddForm.authority
           }
-          this.$axios.post('http://127.0.0.1:666/account/accountAdd', qs.stringify(params))
+          this.$axios.post('/account/accountAdd', params)
             .then(res => {
-              console.log(res)
-
-              if (res.data.status === 200) {
+              if (res.status === 200) {
                 this.$message({
                   showClose: true,
-                  message: res.data.msg,
+                  message: res.msg,
                   type: 'success',
                   offset: 30
                 })
@@ -134,7 +131,7 @@ export default {
               } else {
                 this.$message({
                   showClose: true,
-                  message: res.data.msg,
+                  message: res.msg,
                   type: 'error',
                   offset: 30
                 })
@@ -142,6 +139,7 @@ export default {
             })
             .catch(err => {
               console.log(err)
+              this.$message.error('添加失败,服务器后台出现了问题')
             })
         } else {
           alert('添加用户失败，请重新填写表单')
